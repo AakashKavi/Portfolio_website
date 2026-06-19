@@ -398,7 +398,7 @@ document.getElementById('logoBtn').addEventListener('click', () => scrollToSecti
 /* ============================================================
    TELEMETRY TICKER
    ============================================================ */
-const startTime = Date.now();
+/*const startTime = Date.now();
 setInterval(() => {
   const t = Date.now() - startTime, k = t / 1000, up = Math.floor(t / 1000);
   const px = (1.24 + 0.3 * Math.sin(k * 0.5)).toFixed(2), py = (-0.61 + 0.25 * Math.cos(k * 0.4)).toFixed(2);
@@ -418,7 +418,7 @@ setInterval(() => {
       if (elm.textContent !== s) elm.textContent = s;
     }
   });
-}, 220);
+}, 220); /*
 
 /* ============================================================
    AUDIO ENGINE (Web Audio API)
