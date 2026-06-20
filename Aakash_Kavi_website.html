@@ -41,11 +41,15 @@
   .card{border:1px solid rgba(255,255,255,.09);background:rgba(12,16,22,.55);border-radius:5px;overflow:hidden;transition:border-color .3s ease}
   .card.open{border-color:rgba(0,229,192,.45)}
   .card-head{display:grid;gap:24px;align-items:center;padding:20px 22px;cursor:pointer;background:none;border:none;width:100%;text-align:left;color:inherit}
+  .card-head.exp-head{grid-template-columns:150px 1fr 26px}
+  .card-head.proj-head{grid-template-columns:54px 1fr 26px}
   .chev{font:400 13px/1 'IBM Plex Mono';color:#00e5c0;text-align:center;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
   .card.open .chev{transform:rotate(180deg)}
   .card-body-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.2,.7,.2,1)}
   .card.open .card-body-wrap{grid-template-rows:1fr}
   .card-body-inner{overflow:hidden;position:relative}
+  .exp-body-pad{padding:4px 22px 22px 174px}
+  .proj-body-pad{padding:2px 22px 22px 74px}
 
   .skill-pill{font:500 12px/1 'IBM Plex Mono';color:#c3ccd4;border:1px solid rgba(255,255,255,.1);padding:8px 11px;border-radius:2px;transition:all .2s ease;cursor:default;display:inline-block}
   .skill-pill:hover{border-color:#00e5c0;color:#00e5c0;box-shadow:0 0 14px rgba(0,229,192,.15)}
@@ -57,9 +61,49 @@
   .skip-btn:hover{color:#00e5c0}
 
   @media (max-width:760px){
-    nav .nav-links{display:none}
-    .card-head{grid-template-columns:1fr 22px !important}
-    .card-head .meta-col{display:none}
+    .nav-subtitle{display:none}
+    .nav-links{gap:12px !important}
+    .nav-links .navlink{font-size:10px;letter-spacing:.12em;padding:4px 0}
+
+    section[data-sec]{padding-left:20px !important;padding-right:20px !important}
+
+    /* Card heads: stack date/number above title instead of squeezing
+       a 150px or 54px fixed column beside it on a narrow screen. */
+    .card-head.exp-head,
+    .card-head.proj-head{
+      grid-template-columns:1fr 22px;
+      grid-template-rows:auto auto;
+      row-gap:10px;
+    }
+    .card-head.exp-head .head-meta,
+    .card-head.proj-head .head-meta{
+      grid-column:1 / 2;
+      grid-row:1;
+    }
+    .card-head.exp-head .head-main,
+    .card-head.proj-head .head-main{
+      grid-column:1 / 2;
+      grid-row:2;
+    }
+    .card-head.exp-head .chev,
+    .card-head.proj-head .chev{
+      grid-column:2;
+      grid-row:1 / 3;
+    }
+
+    /* Expanded body text was indented to clear the desktop-only side
+       column (174px / 74px). On mobile there is no side column, so
+       that indent just crushes the text into a narrow strip. */
+    .exp-body-pad{padding:4px 18px 22px 18px}
+    .proj-body-pad{padding:2px 18px 22px 18px}
+
+    h1{word-break:break-word}
+  }
+
+  @media (max-width:420px){
+    .nav-links{gap:9px !important}
+    .nav-links .navlink{font-size:9px}
+    nav > div:last-child{width:100%;justify-content:flex-end}
   }
 </style>
 </head>
@@ -70,25 +114,21 @@
   <canvas id="bgCanvas" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block"></canvas>
   <div style="position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(125% 95% at 68% 32%, rgba(7,9,12,.18), rgba(7,9,12,.74) 62%, rgba(7,9,12,.92) 100%)"></div>
 
-  <nav style="position:fixed;top:0;left:0;right:0;z-index:6;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(7,9,12,.9),rgba(7,9,12,.35));backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)">
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:6;min-height:62px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(7,9,12,.9),rgba(7,9,12,.35));backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);flex-wrap:wrap;gap:8px 16px">
     <div style="display:flex;align-items:center;gap:12px;cursor:pointer" id="logoBtn">
-      <div style="width:30px;height:30px;display:grid;place-items:center;border:1px solid #00e5c0;color:#00e5c0;font:700 12px/1 'Space Grotesk';box-shadow:0 0 14px rgba(0,229,192,.3)">AK</div>
+      <div style="width:30px;height:30px;flex:none;display:grid;place-items:center;border:1px solid #00e5c0;color:#00e5c0;font:700 12px/1 'Space Grotesk';box-shadow:0 0 14px rgba(0,229,192,.3)">AK</div>
       <div>
         <div style="font:600 13px/1 'Space Grotesk';letter-spacing:.04em">AAKASH KAVI</div>
-        <div style="font:500 9px/1.4 'IBM Plex Mono';letter-spacing:.2em;color:#00e5c0;margin-top:3px">ROBOTICS SOFTWARE ENGINEER</div>
+        <div class="nav-subtitle" style="font:500 9px/1.4 'IBM Plex Mono';letter-spacing:.2em;color:#00e5c0;margin-top:3px">ROBOTICS SOFTWARE ENGINEER</div>
       </div>
     </div>
-    <div class="nav-links" style="display:flex;align-items:center;gap:30px">
+    <div class="nav-links" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
       <button class="navlink active" data-target="hero">HOME<span class="underline"></span></button>
       <button class="navlink" data-target="exp">EXPERIENCE<span class="underline"></span></button>
       <button class="navlink" data-target="proj">PROJECTS<span class="underline"></span></button>
       <button class="navlink" data-target="skills">SKILLS<span class="underline"></span></button>
     </div>
     <div style="display:flex;align-items:center;gap:16px">
-      <div style="display:flex;align-items:center;gap:7px;font:500 10px/1 'IBM Plex Mono';letter-spacing:.13em;color:#7a8694">
-        <span style="width:7px;height:7px;border-radius:50%;background:#00e5c0;box-shadow:0 0 8px #00e5c0;animation:blink 1.7s infinite"></span>
-        SYS · <span data-tel="up">00:00</span>
-      </div>
       <div style="display:flex;gap:13px;font:500 10px/1 'IBM Plex Mono';letter-spacing:.1em">
         <a href="https://github.com/AakashKavi" target="_blank" rel="noopener" class="iconlink">GH</a>
         <a href="https://linkedin.com/in/aakash-kavi" target="_blank" rel="noopener" class="iconlink">IN</a>
@@ -147,11 +187,6 @@
     </section>
 
   </main>
-
-  <div style="position:fixed;left:22px;bottom:22px;z-index:6;border:1px solid rgba(255,255,255,.1);background:rgba(10,13,18,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:11px 14px 12px;border-radius:4px;min-width:198px">
-    <div style="display:flex;align-items:center;gap:7px;margin-bottom:9px"><span style="width:6px;height:6px;border-radius:50%;background:#00e5c0;box-shadow:0 0 8px #00e5c0;animation:blink 1.4s infinite"></span><span style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.2em;color:#7a8694">TELEMETRY · BOOT <span id="bootPct">0%</span></span></div>
-    <div id="telemetryRows" style="display:flex;flex-direction:column;gap:6px;font:500 11px/1 'IBM Plex Mono'"></div>
-  </div>
 
   <div class="music-toggle" id="musicToggle">
     <span id="eqOn" style="display:flex;align-items:flex-end;gap:2px;height:13px">
@@ -219,11 +254,6 @@ const SKILL_GROUPS = [
   { name:'LANGUAGES', items:['German · B2','English · Fluent','Hindi · Native','Gujarati','Marathi'] }
 ];
 
-const METRIC_DEFS = [
-  ['hz','SLAM_HZ'], ['cpu','CPU_LOAD'], ['nodes','ROS_NODES'],
-  ['px','POSE_XY'], ['th','YAW_θ'], ['loop','LOOP_MS']
-];
-
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ============================================================
@@ -234,13 +264,13 @@ function el(html){ const t = document.createElement('template'); t.innerHTML = h
 function buildExpCard(item, i){
   const card = el(`
     <div class="card">
-      <button class="card-head" style="grid-template-columns:150px 1fr 26px">
-        <div>
+      <button class="card-head exp-head">
+        <div class="head-meta">
           <div style="font:600 12px/1.3 'IBM Plex Mono';letter-spacing:.05em;color:#00e5c0">${item.dates}</div>
           <div style="font:400 11px/1.4 'IBM Plex Mono';color:#7a8694;margin-top:7px">${item.loc}</div>
         </div>
-        <div>
-          <div style="display:flex;align-items:center;gap:10px">
+        <div class="head-main">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <span style="font:600 20px/1.15 'Space Grotesk'">${item.company}</span>
             ${item.cur ? '<span style="font:600 8px/1 \'IBM Plex Mono\';letter-spacing:.14em;color:#04130f;background:#00e5c0;padding:4px 6px;border-radius:2px">● LIVE</span>' : ''}
           </div>
@@ -251,7 +281,7 @@ function buildExpCard(item, i){
       <div class="card-body-wrap">
         <div class="card-body-inner">
           <div class="scanline card-scan"></div>
-          <div style="padding:4px 22px 22px 174px;display:flex;flex-direction:column;gap:9px">
+          <div class="exp-body-pad" style="display:flex;flex-direction:column;gap:9px">
             ${item.bullets.map(b => `<div style="display:flex;gap:11px;font:400 14px/1.55 'Space Grotesk';color:#b7c0c9"><span style="color:#00e5c0;flex:none">▸</span><span>${b}</span></div>`).join('')}
           </div>
         </div>
@@ -264,9 +294,9 @@ function buildExpCard(item, i){
 function buildProjCard(p){
   const card = el(`
     <div class="card">
-      <button class="card-head" style="grid-template-columns:54px 1fr 26px">
-        <div style="font:700 26px/1 'Space Grotesk';color:rgba(0,229,192,.45)">${p.no}</div>
-        <div>
+      <button class="card-head proj-head">
+        <div class="head-meta" style="font:700 26px/1 'Space Grotesk';color:rgba(0,229,192,.45)">${p.no}</div>
+        <div class="head-main">
           <div style="font:600 19px/1.15 'Space Grotesk'">${p.title}</div>
           <div style="font:500 11px/1.3 'IBM Plex Mono';letter-spacing:.06em;color:#00e5c0;margin-top:7px">${p.ctx}</div>
         </div>
@@ -275,7 +305,7 @@ function buildProjCard(p){
       <div class="card-body-wrap">
         <div class="card-body-inner">
           <div class="scanline card-scan"></div>
-          <div style="padding:2px 22px 22px 74px">
+          <div class="proj-body-pad">
             <div style="font:400 14px/1.6 'Space Grotesk';color:#aab3bc;max-width:640px">${p.desc}</div>
             <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:16px">
               ${p.tags.map(t => `<span style="font:500 10px/1 'IBM Plex Mono';letter-spacing:.06em;color:#9fd9cf;border:1px solid rgba(0,229,192,.28);padding:6px 8px;border-radius:2px">${t}</span>`).join('')}
@@ -328,23 +358,12 @@ document.getElementById('skillGroups').append(...SKILL_GROUPS.map(g => el(`
     </div>
   </div>`)));
 
-const telemetryRowsEl = document.getElementById('telemetryRows');
-METRIC_DEFS.forEach(([key,label]) => {
-  telemetryRowsEl.appendChild(el(`
-    <div style="display:flex;justify-content:space-between;gap:18px">
-      <span style="color:#6c7783">${label}</span>
-      <span data-tel="${key}" data-online="0" style="color:#39424c;letter-spacing:.1em">———</span>
-    </div>`));
-});
-
 /* ============================================================
    NAV / SCROLL-SPY / REVEAL ON SCROLL
    ============================================================ */
 const sections = { hero: document.querySelector('[data-sec="hero"]'), exp: document.querySelector('[data-sec="exp"]'), proj: document.querySelector('[data-sec="proj"]'), skills: document.querySelector('[data-sec="skills"]') };
 const navButtons = document.querySelectorAll('.navlink');
 const revealed = { hero:false, exp:false, proj:false, skills:false };
-const onlineMetrics = {};
-const metricMap = { hero:['hz'], exp:['cpu','nodes'], proj:['px','th'], skills:['loop'] };
 
 function setActiveNav(id){
   navButtons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
@@ -358,14 +377,6 @@ function revealSection(id){
   else { requestAnimationFrame(() => box.classList.add('revealed')); }
   const scan = document.getElementById('scan-' + id);
   if (scan && !reduceMotion){ scan.classList.add('show'); setTimeout(() => scan.classList.remove('show'), 700); }
-  (metricMap[id] || []).forEach((k, j) => {
-    onlineMetrics[k] = true;
-    const elM = document.querySelector(`[data-tel="${k}"]`);
-    if (elM){ elM.dataset.online = '1'; elM.style.color = '#00e5c0'; elM.style.letterSpacing = 'normal'; }
-    if (!reduceMotion) setTimeout(() => sndTick(), 140 + j * 130);
-  });
-  const cnt = Object.keys(onlineMetrics).length;
-  document.getElementById('bootPct').textContent = Math.round(cnt / 6 * 100) + '%';
   if (!reduceMotion) sndSection(Object.keys(sections).indexOf(id));
 }
 
@@ -388,37 +399,14 @@ Object.values(sections).forEach(s => io.observe(s));
 function scrollToSection(id){
   const target = sections[id];
   if (!target) return;
-  const top = target.getBoundingClientRect().top + window.scrollY - 52;
+  const navEl = document.querySelector('nav');
+  const navOffset = (navEl ? navEl.offsetHeight : 62) + 10;
+  const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
   window.scrollTo({ top, behavior: 'smooth' });
   sndNav();
 }
 navButtons.forEach(b => b.addEventListener('click', () => scrollToSection(b.dataset.target)));
 document.getElementById('logoBtn').addEventListener('click', () => scrollToSection('hero'));
-
-/* ============================================================
-   TELEMETRY TICKER
-   ============================================================ */
-/*const startTime = Date.now();
-setInterval(() => {
-  const t = Date.now() - startTime, k = t / 1000, up = Math.floor(t / 1000);
-  const px = (1.24 + 0.3 * Math.sin(k * 0.5)).toFixed(2), py = (-0.61 + 0.25 * Math.cos(k * 0.4)).toFixed(2);
-  const vals = {
-    hz: (38 + 2 * Math.sin(k * 1.7)).toFixed(1),
-    cpu: Math.round(36 + 14 * Math.abs(Math.sin(k * 0.6))) + '%',
-    nodes: 14,
-    px: px + ', ' + py,
-    th: (0.34 + 0.06 * Math.sin(k * 0.3)).toFixed(2),
-    loop: Math.round(118 + 22 * Math.abs(Math.cos(k * 0.7))),
-    up: String(Math.floor(up / 60)).padStart(2, '0') + ':' + String(up % 60).padStart(2, '0')
-  };
-  document.querySelectorAll('[data-tel]').forEach(elm => {
-    const key = elm.getAttribute('data-tel');
-    if (key === 'up' || elm.dataset.online === '1'){
-      const s = String(vals[key]);
-      if (elm.textContent !== s) elm.textContent = s;
-    }
-  });
-}, 220); /*
 
 /* ============================================================
    AUDIO ENGINE (Web Audio API)
@@ -572,7 +560,8 @@ function buildCloud(){
 }
 function resizeBg(){
   const dpr = Math.min(2, window.devicePixelRatio || 1);
-  bw = window.innerWidth; bh = window.innerHeight;
+  bw = window.innerWidth || document.documentElement.clientWidth || 800;
+  bh = window.innerHeight || document.documentElement.clientHeight || 600;
   bgCanvas.width = bw * dpr; bgCanvas.height = bh * dpr;
   bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
@@ -618,7 +607,9 @@ const introOverlay = document.getElementById('introOverlay');
 let introCtx, introRaf, introT0, introPts = [], introEnded = false;
 
 function fitIntro(){
-  const dpr = Math.min(2, window.devicePixelRatio || 1), w = window.innerWidth, h = window.innerHeight;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = window.innerWidth || document.documentElement.clientWidth || 800;
+  const h = window.innerHeight || document.documentElement.clientHeight || 600;
   if (introCanvas.width !== Math.round(w * dpr) || introCanvas.height !== Math.round(h * dpr)){
     introCanvas.width = Math.round(w * dpr); introCanvas.height = Math.round(h * dpr);
   }
@@ -627,7 +618,9 @@ function fitIntro(){
   return introCtx;
 }
 function sampleName(){
-  const w = window.innerWidth, h = window.innerHeight;
+  const w = window.innerWidth || document.documentElement.clientWidth || 800;
+  const h = window.innerHeight || document.documentElement.clientHeight || 600;
+  if (w < 10 || h < 10){ introPts = []; return; } // viewport not laid out yet — bail safely, caller falls back to endIntro()
   const off = document.createElement('canvas'); off.width = w; off.height = h;
   const o = off.getContext('2d');
   o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
