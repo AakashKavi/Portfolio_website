@@ -579,9 +579,13 @@ function drawCloud(time){
   pts.sort((a, b) => a.z - b.z);
   const scan = Math.sin(time * 0.0011 * motionScale()) * R;
   for (const p of pts){
-    const depth = (p.z + 1) / 2; let a = 0.12 + 0.6 * depth; const near = Math.abs((p.Y - cy) - scan); if (near < 22) a = Math.min(1, a + 0.5 * (1 - near / 22));
-    if (p.f){ a = Math.min(1, a + 0.25); bgCtx.shadowColor = 'rgba(0,229,192,0.9)'; bgCtx.shadowBlur = 8; } else bgCtx.shadowBlur = 0;
-    bgCtx.fillStyle = 'rgba(0,229,192,' + a + ')'; const sz = (p.f ? 1.4 : 0.6) + 1.7 * depth;
+    const depth = (p.z + 1) / 2; let a = 0.12 + 0.6 * depth;
+    const near = Math.abs((p.Y - cy) - scan);
+    let glow = 0;
+    if (near < 22){ const prox = 1 - near / 22; a = Math.min(1, a + 0.78 * prox); glow = prox; }
+    if (p.f){ a = Math.min(1, a + 0.25); glow = Math.max(glow, 0.7); }
+    if (glow > 0){ bgCtx.shadowColor = 'rgba(0,229,192,0.95)'; bgCtx.shadowBlur = 6 + 10 * glow; } else bgCtx.shadowBlur = 0;
+    bgCtx.fillStyle = 'rgba(0,229,192,' + a + ')'; const sz = (p.f ? 1.4 : 0.6) + 1.7 * depth + (near < 22 ? 0.9 * (1 - near/22) : 0);
     bgCtx.beginPath(); bgCtx.arc(p.X, p.Y, sz, 0, 6.283); bgCtx.fill();
   }
   bgCtx.shadowBlur = 0;
@@ -644,9 +648,15 @@ function introLoop(ts){
     const br = p.baseR * (0.72 + 0.36 * Math.sin(t / 430 + p.ph));
     const hx = cx + Math.cos(p.ang) * br, hy = cy + Math.sin(p.ang) * br;
     const x = hx + (p.tx - hx) * e, y = hy + (p.ty - hy) * e;
-    let a = 0.18 + 0.62 * conv; if (p.feat) a = Math.min(1, a + 0.2);
+    let a = 0.18 + 0.62 * conv;
+    if (p.feat){
+      const pulse = 0.5 + 0.5 * Math.sin(t / 430 + p.ph); // 0..1, in phase with the radius pulse
+      a = Math.min(1, a + 0.45 + 0.25 * pulse);
+      introCtx.shadowColor = 'rgba(0,229,192,0.95)';
+      introCtx.shadowBlur = 7 + 9 * pulse;
+    } else introCtx.shadowBlur = 0;
     introCtx.fillStyle = 'rgba(0,229,192,' + a + ')';
-    const sz = (1 - e) * 1.7 + 0.9 + (p.feat ? 0.6 : 0);
+    const sz = (1 - e) * 1.7 + 0.9 + (p.feat ? 0.9 : 0);
     introCtx.beginPath(); introCtx.arc(x, y, sz, 0, 6.283); introCtx.fill();
   }
   if (t >= 5000){ endIntro(); return; }
