@@ -65,6 +65,13 @@
     .nav-links{gap:12px !important}
     .nav-links .navlink{font-size:10px;letter-spacing:.12em;padding:4px 0}
 
+    /* Logo row needs full width on mobile so margin-left:auto pushes badge to the right */
+    #logoBtn{width:100%}
+
+    /* Swap badge: hide the fixed floating badge, show the one inside the nav */
+    .wip-badge{display:none !important}
+    .wip-badge-nav{display:flex !important}
+
     section[data-sec]{padding-left:20px !important;padding-right:20px !important}
 
     /* Card heads: stack date/number above title instead of squeezing
@@ -99,9 +106,6 @@
 
     h1{word-break:break-word}
 
-    /* Nav wraps to two rows on mobile so badge needs more top clearance */
-    .wip-badge{top:96px !important}
-
     /* On desktop the globe sits beside the text column, so the
        off-center gradient (68% 32%) only lightly dims it. On mobile
        everything stacks into one column and the globe sits directly
@@ -131,6 +135,13 @@
       <div>
         <div style="font:600 13px/1 'Space Grotesk';letter-spacing:.04em">AAKASH KAVI</div>
         <div class="nav-subtitle" style="font:500 9px/1.4 'IBM Plex Mono';letter-spacing:.2em;color:#00e5c0;margin-top:3px">ROBOTICS SOFTWARE ENGINEER</div>
+      </div>
+      <div class="wip-badge-nav" style="display:none;align-items:center;gap:8px;border:1px solid rgba(255,165,0,.28);padding:6px 10px;border-radius:4px;pointer-events:none;margin-left:auto">
+        <span style="width:5px;height:5px;border-radius:50%;background:#f5a623;box-shadow:0 0 6px rgba(245,166,35,.7);flex:none;animation:blink 1.9s infinite"></span>
+        <div>
+          <div style="font:600 8px/1 'IBM Plex Mono';letter-spacing:.18em;color:#f5a623">WORK IN PROGRESS</div>
+          <div style="font:500 8px/1 'IBM Plex Mono';letter-spacing:.1em;color:#7a8694;margin-top:4px">v1.0 · UNDER DEVELOPMENT</div>
+        </div>
       </div>
     </div>
     <div class="nav-links" style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
