@@ -99,6 +99,9 @@
 
     h1{word-break:break-word}
 
+    /* Nav wraps to two rows on mobile so badge needs more top clearance */
+    .wip-badge{top:96px !important}
+
     /* On desktop the globe sits beside the text column, so the
        off-center gradient (68% 32%) only lightly dims it. On mobile
        everything stacks into one column and the globe sits directly
@@ -195,6 +198,14 @@
     </section>
 
   </main>
+
+  <div class="wip-badge" style="position:fixed;right:22px;top:70px;z-index:6;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,165,0,.28);background:rgba(10,13,18,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:10px 14px;border-radius:4px;pointer-events:none">
+    <span style="width:6px;height:6px;border-radius:50%;background:#f5a623;box-shadow:0 0 8px rgba(245,166,35,.7);flex:none;animation:blink 1.9s infinite"></span>
+    <div>
+      <div style="font:600 9px/1 'IBM Plex Mono';letter-spacing:.22em;color:#f5a623">WORK IN PROGRESS</div>
+      <div style="font:500 9px/1 'IBM Plex Mono';letter-spacing:.14em;color:#7a8694;margin-top:5px">v1.0 · UNDER DEVELOPMENT</div>
+    </div>
+  </div>
 
   <div class="music-toggle" id="musicToggle">
     <span id="eqOn" style="display:flex;align-items:flex-end;gap:2px;height:13px">
